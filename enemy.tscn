@@ -1,0 +1,203 @@
+[gd_scene load_steps=22 format=3 uid="uid://bikem0d6fptwm"]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_jshm7"]
+[ext_resource type="PackedScene" uid="uid://c1xt2df5gobbm" path="res://character.tscn" id="2_eaqip"]
+[ext_resource type="Script" path="res://state_machine.gd" id="3_oap76"]
+[ext_resource type="Script" path="res://state/enemy_idle_state.gd" id="4_vik77"]
+[ext_resource type="Script" path="res://state/chase_state.gd" id="5_1el0q"]
+[ext_resource type="Script" path="res://state/engage_state.gd" id="6_1fube"]
+[ext_resource type="Script" path="res://state/shoot_state.gd" id="7_me3c1"]
+[ext_resource type="Texture2D" uid="uid://yqs6hhc1mhu2" path="res://assets/Texture/healthbar-yellow.png" id="8_v5pfg"]
+[ext_resource type="AudioStream" uid="uid://bwlu4hugdtv2t" path="res://assets/Audio/shoot.wav" id="9_j278n"]
+[ext_resource type="AudioStream" uid="uid://bfl5t80kve1xp" path="res://assets/Audio/explode.wav" id="10_q1ikd"]
+[ext_resource type="Texture2D" uid="uid://dkxls803y2m6v" path="res://assets/Texture/explosion00.png" id="11_0qhr0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6d76u"]
+radius = 0.15
+height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nr8vq"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_olcvy"]
+radius = 2.0
+height = 16.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_655jq"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("11_0qhr0")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_76t8t"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ifl82"]
+curve = SubResource("Curve_76t8t")
+
+[sub_resource type="Curve" id="Curve_ccbmq"]
+_data = [Vector2(0, 0.505494), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_40t1a"]
+curve = SubResource("Curve_ccbmq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kbrvh"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+spread = 180.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_40t1a")
+alpha_curve = SubResource("CurveTexture_ifl82")
+
+[sub_resource type="QuadMesh" id="QuadMesh_8ntxg"]
+
+[node name="Enemy" type="CharacterBody3D" node_paths=PackedStringArray("death_sound")]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_jshm7")
+targetTag = 1
+durability = 8
+death_sound = NodePath("ExplodeAudio")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.1
+avoidance_enabled = true
+use_3d_avoidance = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_6d76u")
+
+[node name="Character" parent="CollisionShape3D" instance=ExtResource("2_eaqip")]
+transform = Transform3D(-0.125, 0, -1.88745e-08, 0, 0.125, 0, 1.88745e-08, 0, -0.125, 0, -0.25, 0)
+
+[node name="Skeleton3D" parent="CollisionShape3D/Character/RootNode/Root" index="0"]
+bones/0/rotation = Quaternion(-0.428388, -0.562568, 0.562569, 0.428388)
+bones/1/rotation = Quaternion(-0.507512, 0.508228, -0.491906, -0.492102)
+bones/2/rotation = Quaternion(0.0157359, -0.00207874, 0.994625, -0.102322)
+bones/5/rotation = Quaternion(0.5, 0.5, -0.5, 0.5)
+bones/9/position = Vector3(-0.0020752, -0.000304607, 0.00193205)
+bones/9/rotation = Quaternion(-0.527626, -0.470756, 0.470756, 0.527626)
+bones/10/rotation = Quaternion(-0.507686, 0.507902, -0.491728, -0.492437)
+bones/11/rotation = Quaternion(0.0156758, 0.00115174, 0.994626, 0.102336)
+bones/14/rotation = Quaternion(0.5, 0.5, -0.5, 0.5)
+bones/18/rotation = Quaternion(0.000954656, 0.707106, -0.707106, 0.0010862)
+bones/19/rotation = Quaternion(5.29002e-05, -0.0277724, 0.999613, 0.00144513)
+bones/20/rotation = Quaternion(0.0141848, -1.04189e-08, -1.07988e-08, 0.999899)
+bones/21/rotation = Quaternion(0.0623484, -0.0448529, -0.00280481, 0.997042)
+bones/22/rotation = Quaternion(0.0940942, -3.90999e-09, -2.64099e-10, 0.995563)
+bones/23/rotation = Quaternion(0.0939977, -0.000412157, -0.00151777, 0.995571)
+bones/24/rotation = Quaternion(-0.174394, 0.0443199, -0.00744269, 0.98365)
+bones/26/rotation = Quaternion(0.597656, 0.395508, 0.565647, -0.407951)
+bones/27/rotation = Quaternion(-0.334065, 0.650978, -0.24336, 0.636713)
+bones/28/rotation = Quaternion(0.354578, -0.043954, -0.103226, 0.928271)
+bones/29/rotation = Quaternion(0.00353503, 0.721885, -0.0415848, 0.690753)
+bones/31/rotation = Quaternion(0.771667, 0.0466405, 0.00196556, 0.634311)
+bones/32/rotation = Quaternion(0.410935, -0.0278593, 0.0125054, 0.911153)
+bones/34/rotation = Quaternion(-0.213061, 0.695039, 0.358431, 0.585707)
+bones/35/rotation = Quaternion(0.660648, -0.0754557, 0.119352, 0.737296)
+bones/37/rotation = Quaternion(0.678187, -0.48571, 0.463529, 0.298814)
+bones/38/rotation = Quaternion(0.0697147, 0.908507, 0.383986, -0.149363)
+bones/39/rotation = Quaternion(-0.102641, -0.0342051, 0.350763, 0.930194)
+bones/40/rotation = Quaternion(-0.00894527, 0.164381, -0.0338356, 0.985776)
+bones/41/rotation = Quaternion(-0.0567273, -0.0774636, -0.000148471, 0.99538)
+bones/42/rotation = Quaternion(-0.7474, 0.0422068, 0.00765552, 0.662988)
+bones/43/rotation = Quaternion(-0.410937, -0.0278581, -0.0125049, 0.911152)
+bones/45/rotation = Quaternion(-0.23102, 0.802493, -0.347127, -0.426776)
+bones/46/rotation = Quaternion(-0.595143, 0.0459219, 0.310654, 0.739723)
+bones/48/rotation = Quaternion(0.993619, 0.0820115, -0.00215264, 0.0773969)
+bones/49/rotation = Quaternion(0.406576, 0.0295665, 0.151789, 0.900434)
+bones/50/rotation = Quaternion(-0.686499, -0.154143, -0.159994, 0.692359)
+bones/51/rotation = Quaternion(-0.0198179, 0.952287, -0.298255, 0.0616514)
+bones/53/rotation = Quaternion(0.966269, -0.0631407, -0.151511, 0.198451)
+bones/53/scale = Vector3(0.999987, 0.999999, 0.999999)
+bones/54/rotation = Quaternion(0.444192, 0.0101962, -0.189167, 0.875674)
+bones/55/rotation = Quaternion(-0.640564, 0.216041, 0.174014, 0.716047)
+bones/56/rotation = Quaternion(0.0282609, 0.953941, -0.297574, -0.0254467)
+
+[node name="characterMedium" parent="CollisionShape3D/Character/RootNode/Root/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_nr8vq")
+
+[node name="BoneAttachment3D" parent="CollisionShape3D/Character/RootNode/Root/Skeleton3D" index="1"]
+transform = Transform3D(0.16491, -0.117982, -0.979236, 0.947368, -0.257293, 0.19054, -0.27442, -0.959104, 0.0693454, -0.00584334, -0.00181153, 0.0134749)
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("current_state")]
+script = ExtResource("3_oap76")
+current_state = NodePath("EnemyIdleState")
+
+[node name="EnemyIdleState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("4_vik77")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+
+[node name="ChaseState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("5_1el0q")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+
+[node name="Timer" type="Timer" parent="StateMachine/ChaseState"]
+
+[node name="EngageState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("6_1fube")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+
+[node name="Timer" type="Timer" parent="StateMachine/EngageState"]
+
+[node name="ShootState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree", "shoot_audio")]
+script = ExtResource("7_me3c1")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+shoot_audio = NodePath("../../ShootAudio")
+
+[node name="HealthBar3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+billboard = 1
+texture = ExtResource("8_v5pfg")
+
+[node name="SubViewport" type="SubViewport" parent="HealthBar3D"]
+transparent_bg = true
+size = Vector2i(64, 8)
+
+[node name="HealthBar2D" type="TextureProgressBar" parent="HealthBar3D/SubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture_progress = ExtResource("8_v5pfg")
+
+[node name="Vision" type="Area3D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Vision"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -7)
+shape = SubResource("CapsuleShape3D_olcvy")
+
+[node name="RayCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 8, 0, 0.125, 0)
+target_position = Vector3(0, 0, -1)
+collision_mask = 3
+
+[node name="ShootAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("9_j278n")
+doppler_tracking = 2
+
+[node name="ExplodeAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("10_q1ikd")
+doppler_tracking = 2
+
+[node name="ExplodeParticles" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_655jq")
+emitting = false
+process_material = SubResource("ParticleProcessMaterial_kbrvh")
+draw_pass_1 = SubResource("QuadMesh_8ntxg")
+
+[connection signal="timeout" from="StateMachine/ChaseState/Timer" to="StateMachine/ChaseState" method="_on_timer_timeout"]
+[connection signal="timeout" from="StateMachine/EngageState/Timer" to="StateMachine/EngageState" method="_on_timer_timeout"]
+
+[editable path="CollisionShape3D/Character"]

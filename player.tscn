@@ -1,0 +1,195 @@
+[gd_scene load_steps=26 format=3 uid="uid://dfgbc5qm7udu3"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_i1g6j"]
+[ext_resource type="Texture2D" uid="uid://by7s3ru5rrv8f" path="res://Crosshair.png" id="2_w6w5h"]
+[ext_resource type="PackedScene" uid="uid://c1xt2df5gobbm" path="res://character.tscn" id="3_6fbnj"]
+[ext_resource type="Shader" path="res://player.gdshader" id="3_sl2r3"]
+[ext_resource type="Texture2D" uid="uid://yqs6hhc1mhu2" path="res://assets/Texture/healthbar-yellow.png" id="5_b84he"]
+[ext_resource type="Script" path="res://state_machine.gd" id="6_sd0p2"]
+[ext_resource type="Script" path="res://state/idle_state.gd" id="7_o8vbk"]
+[ext_resource type="Script" path="res://state/run_state.gd" id="8_2eew1"]
+[ext_resource type="Script" path="res://state/jump_state.gd" id="9_lt4gu"]
+[ext_resource type="Script" path="res://state/fall_state.gd" id="10_t28fs"]
+[ext_resource type="Script" path="res://state/shoot_state.gd" id="11_s1t06"]
+[ext_resource type="AudioStream" uid="uid://bwlu4hugdtv2t" path="res://assets/Audio/shoot.wav" id="12_fuwvi"]
+[ext_resource type="AudioStream" uid="uid://bfl5t80kve1xp" path="res://assets/Audio/explode.wav" id="13_mlc7c"]
+[ext_resource type="Texture2D" uid="uid://dkxls803y2m6v" path="res://assets/Texture/explosion00.png" id="14_egymu"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_e3p0n"]
+height = 0.5
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6hem4"]
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_272c6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cw0o8"]
+shader = ExtResource("3_sl2r3")
+shader_parameter/vignette_intensity = 0.0
+shader_parameter/vignette_opacity = 0.5
+shader_parameter/vignette_rgb = Color(1, 0, 0, 1)
+shader_parameter/vinnette_size = 15.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ur6d"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("14_egymu")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_we418"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_de4y5"]
+curve = SubResource("Curve_we418")
+
+[sub_resource type="Curve" id="Curve_6rf7v"]
+_data = [Vector2(0, 0.505494), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_oahsy"]
+curve = SubResource("Curve_6rf7v")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_uc8dx"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+spread = 180.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_oahsy")
+alpha_curve = SubResource("CurveTexture_de4y5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_8tye0"]
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("death_sound")]
+collision_mask = 3
+script = ExtResource("1_i1g6j")
+targetTag = 2
+durability = 8
+death_sound = NodePath("ExplodeAudio")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("CylinderShape3D_e3p0n")
+
+[node name="Character" parent="CollisionShape3D" instance=ExtResource("3_6fbnj")]
+transform = Transform3D(-0.125, 0, -1.88745e-08, 0, 0.125, 0, 1.88745e-08, 0, -0.125, 0, -0.25, 0)
+
+[node name="Skeleton3D" parent="CollisionShape3D/Character/RootNode/Root" index="0"]
+bones/20/rotation = Quaternion(0.0126038, -1.04027e-08, -1.0816e-08, 0.999921)
+bones/23/rotation = Quaternion(0.0925172, -0.000377032, -0.00138842, 0.99571)
+bones/24/rotation = Quaternion(-0.168832, 0.0442771, -0.00769306, 0.98462)
+bones/27/rotation = Quaternion(-0.33625, 0.652941, -0.243126, 0.633635)
+bones/28/rotation = Quaternion(0.354317, -0.0464384, -0.100467, 0.928552)
+bones/29/rotation = Quaternion(0.00194799, 0.722109, -0.0407327, 0.690576)
+bones/38/rotation = Quaternion(0.0678255, 0.908369, 0.385473, -0.147231)
+bones/39/rotation = Quaternion(-0.0996784, -0.0330881, 0.35087, 0.930516)
+bones/40/rotation = Quaternion(-0.00910562, 0.159705, -0.0337928, 0.986544)
+bones/48/rotation = Quaternion(0.993899, 0.0809691, -0.0021928, 0.0748667)
+bones/49/rotation = Quaternion(0.401835, 0.029646, 0.150019, 0.902853)
+bones/50/rotation = Quaternion(-0.684455, -0.154571, -0.159813, 0.694326)
+bones/53/rotation = Quaternion(0.966841, -0.062419, -0.151583, 0.195821)
+bones/54/rotation = Quaternion(0.439941, 0.0102257, -0.187356, 0.878205)
+bones/55/rotation = Quaternion(-0.638711, 0.216258, 0.173856, 0.717673)
+
+[node name="characterMedium" parent="CollisionShape3D/Character/RootNode/Root/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_6hem4")
+
+[node name="BoneAttachment3D" parent="CollisionShape3D/Character/RootNode/Root/Skeleton3D" index="1"]
+transform = Transform3D(0.157639, -0.121763, -0.97997, 0.949043, -0.255576, 0.184417, -0.2729, -0.959091, 0.0752729, -0.00585051, -0.00176627, 0.0134771)
+
+[node name="RotationHelper" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="SpringArm" type="SpringArm3D" parent="RotationHelper"]
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0)
+collision_mask = 2
+shape = SubResource("SeparationRayShape3D_272c6")
+spring_length = 5.0
+
+[node name="Camera" type="Camera3D" parent="RotationHelper/SpringArm"]
+transform = Transform3D(1, 0, 0, 0, 1, -3.27826e-07, 0, 3.27826e-07, 1, 0, 0, 4)
+
+[node name="RayCast" type="RayCast3D" parent="RotationHelper/SpringArm/Camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 240, 0, 0, -4.8)
+target_position = Vector3(0, 0, -1)
+collision_mask = 3
+
+[node name="Sight" type="Sprite3D" parent="RotationHelper/SpringArm/Camera/RayCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 7.62939e-06, 0, 0, 1, 0, 0, 0)
+texture = ExtResource("2_w6w5h")
+
+[node name="Vignette" type="ColorRect" parent="RotationHelper/SpringArm/Camera/RayCast"]
+material = SubResource("ShaderMaterial_cw0o8")
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+
+[node name="HealthBar3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+billboard = 1
+texture = ExtResource("5_b84he")
+
+[node name="SubViewport" type="SubViewport" parent="HealthBar3D"]
+transparent_bg = true
+size = Vector2i(64, 8)
+
+[node name="HealthBar2D" type="TextureProgressBar" parent="HealthBar3D/SubViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture_progress = ExtResource("5_b84he")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("current_state")]
+script = ExtResource("6_sd0p2")
+current_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("7_o8vbk")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+
+[node name="RunState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("8_2eew1")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+speed = 2.0
+
+[node name="JumpState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("9_lt4gu")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+speed = 2.0
+
+[node name="FallState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree")]
+script = ExtResource("10_t28fs")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+
+[node name="ShootState" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animation_tree", "shoot_audio")]
+script = ExtResource("11_s1t06")
+actor = NodePath("../..")
+animation_tree = NodePath("../../CollisionShape3D/Character/AnimationTree")
+shoot_audio = NodePath("../../ShootAudio")
+
+[node name="ShootAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("12_fuwvi")
+doppler_tracking = 2
+
+[node name="ExplodeAudio" type="AudioStreamPlayer3D" parent="."]
+process_mode = 3
+stream = ExtResource("13_mlc7c")
+doppler_tracking = 2
+
+[node name="ExplodeParticles" type="GPUParticles3D" parent="."]
+process_mode = 3
+material_override = SubResource("StandardMaterial3D_4ur6d")
+emitting = false
+process_material = SubResource("ParticleProcessMaterial_uc8dx")
+draw_pass_1 = SubResource("QuadMesh_8tye0")
+
+[editable path="CollisionShape3D/Character"]

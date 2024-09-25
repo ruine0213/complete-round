@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://qkw2rh5bf5ab"]
+
+[ext_resource type="PackedScene" uid="uid://dbtvut36iovt8" path="res://assets/Model/office_desk.fbx" id="1_48bcx"]
+[ext_resource type="PackedScene" uid="uid://du3dqd8ui1egp" path="res://assets/Model/office_chair.fbx" id="2_o4pq4"]
+[ext_resource type="PackedScene" uid="uid://uin6ikh1jpq5" path="res://assets/Model/computer_screen_01.fbx" id="3_4vla3"]
+[ext_resource type="PackedScene" uid="uid://ilicumd66c1m" path="res://assets/Model/computer_keyboard_01.fbx" id="4_kcags"]
+
+[node name="office_desk" instance=ExtResource("1_48bcx")]
+
+[node name="office_chair" parent="office_desk" index="0" instance=ExtResource("2_o4pq4")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.75)
+
+[node name="computer_screen_01" parent="office_desk" index="1" instance=ExtResource("3_4vla3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0)
+
+[node name="computer_keyboard_01" parent="office_desk/computer_screen_01" index="1" instance=ExtResource("4_kcags")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)

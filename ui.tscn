@@ -1,0 +1,122 @@
+[gd_scene load_steps=8 format=3 uid="uid://cl3eydoy57jo6"]
+
+[ext_resource type="Script" path="res://ui.gd" id="1_7c8nu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8ebxq"]
+font_size = 72
+font_color = Color(0, 0, 0, 1)
+outline_size = 8
+shadow_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_otg3x"]
+font_size = 36
+font_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bq42l"]
+font_size = 64
+font_color = Color(1, 1, 0, 1)
+outline_size = 8
+outline_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ccy0o"]
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_gwq5b"]
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_80hgm"]
+font_color = Color(1, 0, 0, 1)
+outline_size = 2
+
+[node name="UI" type="Node2D"]
+script = ExtResource("1_7c8nu")
+
+[node name="Title" type="Node2D" parent="."]
+
+[node name="BackGround" type="ColorRect" parent="Title"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.752941, 1, 0.933333, 1)
+
+[node name="Title" type="Label" parent="Title"]
+offset_left = 282.0
+offset_top = 148.0
+offset_right = 862.0
+offset_bottom = 248.0
+text = "Complete Round"
+label_settings = SubResource("LabelSettings_8ebxq")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Start" type="Button" parent="Title"]
+offset_left = 551.0
+offset_top = 324.0
+offset_right = 601.0
+offset_bottom = 355.0
+text = "Start"
+
+[node name="Ready" type="Node2D" parent="."]
+visible = false
+
+[node name="ReadyGo" type="Label" parent="Ready"]
+offset_left = 525.0
+offset_top = 236.0
+offset_right = 636.0
+offset_bottom = 259.0
+label_settings = SubResource("LabelSettings_otg3x")
+horizontal_alignment = 1
+
+[node name="Pause" type="Node2D" parent="."]
+visible = false
+
+[node name="Return" type="Button" parent="Pause"]
+offset_left = 520.0
+offset_top = 250.0
+offset_right = 640.0
+offset_bottom = 281.0
+text = "Return to Title"
+
+[node name="Result" type="Node2D" parent="."]
+visible = false
+
+[node name="Message" type="Label" parent="Result"]
+offset_left = 300.0
+offset_top = 65.0
+offset_right = 875.0
+offset_bottom = 155.0
+text = "Round Completed!"
+label_settings = SubResource("LabelSettings_bq42l")
+
+[node name="Score" type="Label" parent="Result"]
+offset_left = 514.0
+offset_top = 182.0
+offset_right = 668.0
+offset_bottom = 205.0
+label_settings = SubResource("LabelSettings_ccy0o")
+
+[node name="HUD" type="Node2D" parent="."]
+visible = false
+
+[node name="Timer" type="Label" parent="HUD"]
+offset_right = 40.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_gwq5b")
+
+[node name="Target" type="Label" parent="HUD"]
+offset_left = 5.0
+offset_top = 51.0
+offset_right = 45.0
+offset_bottom = 74.0
+label_settings = SubResource("LabelSettings_80hgm")
+
+[connection signal="pressed" from="Title/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Pause/Return" to="." method="_on_return_pressed"]

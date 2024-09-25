@@ -1,0 +1,46 @@
+[gd_scene load_steps=9 format=3 uid="uid://6m620xeuya81"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_sv0xh"]
+[ext_resource type="PackedScene" uid="uid://cl3eydoy57jo6" path="res://ui.tscn" id="2_1nyjs"]
+[ext_resource type="PackedScene" uid="uid://ck2yktwrij2gp" path="res://main.tscn" id="2_8mqnq"]
+[ext_resource type="Script" path="res://state_machine.gd" id="4_8kpe6"]
+[ext_resource type="Script" path="res://state/title_state.gd" id="5_8agre"]
+[ext_resource type="Script" path="res://state/ingame_state.gd" id="6_att1h"]
+[ext_resource type="Script" path="res://state/pause_state.gd" id="8_heywe"]
+[ext_resource type="Script" path="res://state/result_state.gd" id="9_x60t3"]
+
+[node name="Game" type="Node"]
+process_mode = 3
+script = ExtResource("1_sv0xh")
+
+[node name="Main" parent="." instance=ExtResource("2_8mqnq")]
+process_mode = 1
+
+[node name="UI" parent="." instance=ExtResource("2_1nyjs")]
+
+[node name="Timer" type="Timer" parent="."]
+process_mode = 1
+wait_time = 0.1
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("current_state")]
+script = ExtResource("4_8kpe6")
+current_state = NodePath("TitleState")
+
+[node name="TitleState" type="Node" parent="StateMachine" node_paths=PackedStringArray("ui", "timer")]
+script = ExtResource("5_8agre")
+ui = NodePath("../../UI")
+timer = NodePath("../../Timer")
+
+[node name="InGameState" type="Node" parent="StateMachine" node_paths=PackedStringArray("ui")]
+script = ExtResource("6_att1h")
+ui = NodePath("../../UI")
+
+[node name="PauseState" type="Node" parent="StateMachine" node_paths=PackedStringArray("ui")]
+script = ExtResource("8_heywe")
+ui = NodePath("../../UI")
+
+[node name="ResultState" type="Node" parent="StateMachine" node_paths=PackedStringArray("ui")]
+script = ExtResource("9_x60t3")
+ui = NodePath("../../UI")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
